@@ -1,0 +1,43 @@
+# Open the CSV file using Latin encoding
+file_path = "/Users/khush/Downloads/spotify-2023.csv"
+file = open(file_path, "r", encoding="latin1")
+lines = file.readlines()
+file.close()
+
+# Initialize counters
+total_songs = 0
+major_count = 0
+minor_count = 0
+
+# Find the index of the 'mode' column
+header = lines[0].strip().split(",")
+mode_index = -1
+for i in range(len(header)):
+    if header[i].lower() == "mode":
+        mode_index = i
+        break
+
+# Count major and minor mode songs
+if mode_index != -1:
+    for line in lines[1:]:
+        parts = line.strip().split(",")
+        if len(parts) > mode_index:
+            mode_value = parts[mode_index]
+            if mode_value == "1":
+                major_count += 1
+                total_songs += 1
+            elif mode_value == "0":
+                minor_count += 1
+                total_songs += 1
+
+    # Calculate percentages
+    if total_songs > 0:
+        major_percent = (major_count / total_songs) * 100
+        minor_percent = (minor_count / total_songs) * 100
+
+        print("Major Mode Songs:", round(major_percent, 2), "%")
+        print("Minor Mode Songs:", round(minor_percent, 2), "%")
+    else:
+        print("No songs with valid mode data found.")
+else:
+    print("Mode column not found in the CSV file.")
